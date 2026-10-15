@@ -1,0 +1,510 @@
+<title>Hanyu Arcade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Golos+Text:wght@400;500;700&family=Press+Start+2P&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+SC:wght@400;700;900&family=ZCOOL+QingKe+HuangYou&display=swap">
+<style>
+/* Layout: one straight scroll. Headline, three steps, then five "levels":
+   a colour card that says what it is, next to a white screen that shows it. No tabs, no menus. */
+:root{
+  --bg:#EFEEE9;
+  --ink:#121212;
+  --paper:#FFFFFF;
+  --muted:#5D5A54;
+  --line:#D9D6CE;
+  --purple:#A47CF3;
+  --red:#EE4A3A;
+  --blue:#35A6EE;
+  --green:#33C26C;
+  --pink:#F06BAE;
+  --yellow:#F7D33A;
+  --orange:#F7941D;
+  --dot:rgba(18,18,18,.17);
+  --grid:#E8A49C;
+  --red-ink:#C2362A;
+  --green-ink:#1D7A44;
+  --f-display:'Unbounded','Arial Black',Impact,sans-serif;
+  --f-body:'Golos Text',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-pixel:'Press Start 2P','Courier New',monospace;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --f-han:'Noto Sans SC','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  --f-hand:'ZCOOL QingKe HuangYou','Noto Sans SC','PingFang SC',sans-serif;
+  --shadow:6px 6px 0 var(--ink);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+[hidden]{display:none!important}
+.wrap{padding-inline:clamp(16px,3vw,42px);max-width:1180px;margin-inline:auto}
+
+/* bar */
+.bar{background:var(--ink);color:var(--paper)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:10px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:38px;height:38px;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-family:var(--f-hand);font-size:28px;line-height:1;border:2px solid var(--paper)}
+.logo-word{font-family:var(--f-pixel);font-size:11px;line-height:1.35;color:var(--orange)}
+.logo-word b{display:block;color:var(--yellow);font-weight:400}
+.bar-note{font-family:var(--f-pixel);font-size:8px;color:#B8B4A8;line-height:1.6;text-align:right}
+
+/* hero */
+.hero{padding-block:34px 10px}
+.hero h1{font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-size:clamp(22px,3.4vw,40px);line-height:1.1;margin:0 0 14px;text-wrap:balance}
+.hero h1 .hz{font-family:var(--f-hand);font-weight:400;color:var(--red)}
+.hero p{margin:0;font-size:18px;font-weight:500;max-width:52ch}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;list-style:none;margin:28px 0 0;padding:0}
+.step{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:3px solid var(--ink);padding:14px}
+.step-n{flex:none;width:34px;height:34px;display:grid;place-items:center;background:var(--ink);color:var(--yellow);font-family:var(--f-pixel);font-size:12px}
+.step p{margin:0;font-size:15px;line-height:1.4}
+
+/* section tag */
+.tag{display:inline-block;background:var(--ink);color:var(--paper);font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-size:clamp(17px,2.2vw,22px);padding:8px 14px;margin:48px 0 22px;box-shadow:5px 5px 0 var(--orange)}
+
+/* levels */
+.levels{display:grid;gap:26px}
+.level{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border:3px solid var(--ink);box-shadow:var(--shadow);background:var(--paper)}
+@media (max-width:820px){.level{grid-template-columns:minmax(0,1fr)}}
+.info{padding:18px;display:flex;flex-direction:column;gap:8px;background-image:radial-gradient(var(--dot) 1px,transparent 1.4px);background-size:9px 9px;border-right:3px solid var(--ink)}
+@media (max-width:820px){.info{border-right:0;border-bottom:3px solid var(--ink)}}
+.info .lv{font-family:var(--f-pixel);font-size:9px}
+.info h2{font-family:var(--f-display);font-weight:900;text-transform:uppercase;font-size:clamp(22px,2.6vw,30px);line-height:1;margin:0}
+.info p{margin:0;font-size:15px;font-weight:500;line-height:1.45;max-width:40ch}
+.count{margin-top:auto;padding-top:12px;line-height:1}
+.count b{font-family:var(--f-pixel);font-weight:400;font-size:28px;letter-spacing:-.04em}
+.count span{font-family:var(--f-pixel);font-size:9px;margin-left:8px}
+.demo{padding:18px;display:flex;flex-direction:column;gap:12px;justify-content:center;min-width:0}
+.cap{font-family:var(--f-mono);font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:0}
+.btn{align-self:flex-start;border:2px solid var(--ink);background:var(--yellow);padding:9px 14px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;box-shadow:3px 3px 0 var(--ink)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+
+/* level 1: notes */
+.notes{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.notes li{border:2px solid var(--ink);padding:8px 10px;display:grid;gap:2px}
+.notes .d{font-family:var(--f-mono);font-size:12px;font-weight:700;color:var(--muted)}
+.notes .t{font-size:15px}
+.notes .t span{font-family:var(--f-han)}
+.lessons{display:grid;gap:8px}
+.lesson{border:2px solid var(--ink);background:var(--paper)}
+.lesson>summary{list-style:none;cursor:pointer;padding:8px 10px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center}
+.lesson>summary::-webkit-details-marker{display:none}
+.lesson>summary::after{content:"+";grid-column:2;grid-row:1/3;width:30px;height:30px;display:grid;place-items:center;border:2px solid var(--ink);background:var(--yellow);font-family:var(--f-pixel);font-size:13px;line-height:1}
+.lesson[open]>summary::after{content:"\2212";background:var(--paper)}
+.lesson>summary:hover{background:#FFF6CC}
+.lesson>summary .d{font-family:var(--f-mono);font-size:12px;font-weight:700;color:var(--muted)}
+.lesson>summary .t{font-size:15px;min-width:0}
+.lesson>summary .t span{font-family:var(--f-han)}
+.lesson-body{border-top:2px dashed var(--line);padding:10px 12px 12px;display:grid;gap:12px}
+.item{min-width:0}
+.item .hz{font-family:var(--f-han);font-weight:700;font-size:18px;margin-right:8px}
+.item .py{font-family:var(--f-mono);font-size:13px;color:var(--red);overflow-wrap:anywhere}
+.item p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+
+/* level 2: homework + strokes */
+.hw{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}
+@media (max-width:520px){.hw{grid-template-columns:minmax(0,1fr)}}
+.sent{font-family:var(--f-han);font-size:clamp(26px,3.6vw,36px);line-height:2.1;margin:0;display:flex;flex-wrap:wrap;align-items:flex-end}
+.sent rt{font-family:var(--f-mono);font-size:.36em;color:var(--red)}
+.zi{border:0;background:transparent;padding:0 1px;font:inherit;line-height:inherit;border-bottom:3px solid transparent}
+.zi:hover,.zi[aria-pressed="true"]{border-bottom-color:var(--yellow);background:#FFF6CC}
+.ru{margin:0;font-size:15px;color:var(--muted)}
+.box{position:relative;width:150px;aspect-ratio:1;max-width:100%;border:2px solid var(--ink);background:var(--paper)}
+.box svg.grid,.box .w{position:absolute;inset:0;width:100%;height:100%}
+.box-cap{font-family:var(--f-mono);font-size:12px;text-align:center;margin:6px 0 0}
+
+/* level 3: anki */
+.acard{border:3px solid var(--ink);padding:18px;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.acard .deck{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.acard .front{font-family:var(--f-han);font-weight:700;font-size:clamp(34px,5vw,50px);line-height:1.15}
+.acard .py{font-family:var(--f-mono);font-size:17px;font-weight:700;color:var(--red)}
+.acard .mean{font-size:17px;font-weight:700}
+.acard .ex{font-family:var(--f-han);font-size:17px}
+
+/* level 4: copybook */
+.cb{display:flex;flex-wrap:wrap;gap:6px}
+.cell{width:clamp(44px,6.4vw,62px);aspect-ratio:1;max-width:100%;border:2px solid var(--ink);background:var(--paper)}
+.cell svg{display:block;width:100%;height:100%}
+
+/* level 5: parts */
+.eq{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px}
+.piece{border:2px solid var(--ink);padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 120px}
+.piece .g{font-family:var(--f-han);font-weight:900;font-size:40px;line-height:1.1}
+.piece .k{font-family:var(--f-pixel);font-size:8px}
+.piece p{margin:0;font-size:14px}
+.op{align-self:center;font-family:var(--f-pixel);font-size:16px}
+
+/* full notes + dictionary */
+.notes-sec{scroll-margin-top:16px}
+.notes-head{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.notes-head p{margin:0;font-size:15px;color:var(--muted);max-width:62ch}
+a.btn{text-decoration:none;color:var(--ink);display:inline-block}
+.btn[aria-pressed="false"]{background:var(--paper)}
+.chapters{display:grid;gap:10px}
+.chapters .lesson{box-shadow:4px 4px 0 var(--ink)}
+.chapters .lesson>summary .d{font-family:var(--f-display);font-weight:900;font-size:15px;color:var(--ink);text-transform:uppercase}
+.chapters .lesson>summary .t{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.chapter-body{border-top:2px dashed var(--line);padding:16px clamp(12px,2vw,22px) 20px;overflow-wrap:anywhere;min-width:0}
+.chapter-body section{margin:0 0 22px;scroll-margin-top:16px}
+.chapter-body .sec-h{border-bottom:2px solid var(--ink);margin-bottom:12px}
+.chapter-body h2{font-family:var(--f-display);font-weight:900;font-size:15px;text-transform:uppercase;line-height:1.2;margin:0 0 8px}
+.chapter-body p{margin:0 0 10px}
+.chapter-body .card{background:var(--paper);border:2px solid var(--ink);padding:14px 16px;margin-bottom:12px}
+.chapter-body .card.grn{box-shadow:4px 4px 0 var(--green)}
+.chapter-body .card.acc{box-shadow:4px 4px 0 var(--red)}
+.chapter-body .warn{background:#FFF6CC;border:2px solid var(--ink);padding:10px 12px;margin-bottom:12px}
+.chapter-body .hz,.chapter-body .w{font-family:var(--f-han);font-size:1.12em;line-height:1.7}
+.chapter-body .tpy,.chapter-body .p,.chapter-body .py{font-family:var(--f-mono);color:var(--red-ink);font-size:13px}
+.chapter-body .tpy{display:block}
+.chapter-body .inl{display:inline}
+.chapter-body .ru{color:var(--muted)}
+.chapter-body .lbl{font-family:var(--f-mono);font-size:12px;font-weight:700;text-transform:uppercase;color:var(--green-ink);margin-bottom:10px}
+.chapter-body .k{font-weight:700;color:var(--red-ink)}
+.chapter-body .b{margin-top:6px}
+.chapter-body .ph,.chapter-body .vi{padding:8px 0;border-bottom:1px solid var(--line)}
+.chapter-body .ph:last-child{border-bottom:0}
+.chapter-body .vi .t{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.chapter-body .vcols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:640px){.chapter-body .vcols{grid-template-columns:minmax(0,1fr)}}
+.chapter-body .gwall{font-family:var(--f-han);line-height:2;font-size:22px}
+.chapter-body .gwall b{display:block;font-family:var(--f-body);font-size:14px}
+.chapter-body mark{background:var(--yellow);color:var(--ink);padding:0 3px}
+.chapter-body details{border-top:2px dashed var(--line);padding:10px 0}
+.chapter-body summary{cursor:pointer;font-weight:700;color:var(--green-ink)}
+.chapter-body details[open]>summary{margin-bottom:12px}
+.chapter-body ul,.chapter-body ol{padding-left:22px}
+.chapter-body li{margin-bottom:6px}
+.chapter-body a{color:var(--red-ink);text-underline-offset:3px}
+.chapter-body pre{white-space:pre-wrap;font:inherit}
+.tscroll{overflow-x:auto;max-width:100%;margin-bottom:10px}
+.chapter-body table{border-collapse:collapse;width:100%;font-size:15px}
+.chapter-body th{text-align:left;font-family:var(--f-mono);font-size:12px;color:var(--muted);padding:8px 10px 8px 0}
+.chapter-body td{border-bottom:1px solid var(--line);padding:8px 12px 8px 0;vertical-align:top}
+.oct8-scroll{overflow-x:auto;max-width:100%}
+.hide-py .tpy,.hide-py td.p,.hide-py .py{display:none}
+.dict{display:grid;gap:10px}
+.search{width:100%;max-width:560px;border:3px solid var(--ink);background:var(--paper);padding:11px 14px;font-size:17px;font-family:var(--f-body);box-shadow:4px 4px 0 var(--ink)}
+.dict-count{margin:0;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.word{border:2px solid var(--ink);background:var(--paper);padding:12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.word .hz{font-family:var(--f-han);font-weight:700;font-size:26px;line-height:1.2}
+.word .p{font-family:var(--f-mono);font-size:13px;color:var(--red-ink)}
+.word .m{font-size:14px}
+.word .tp{align-self:flex-start;margin-top:4px;font-family:var(--f-mono);font-size:11px;border:1.5px solid var(--ink);padding:1px 5px;background:var(--bg)}
+
+/* footer */
+.foot{background:var(--ink);color:var(--paper);margin-top:56px}
+.foot .wrap{padding-block:28px;display:flex;flex-wrap:wrap;gap:14px 30px;justify-content:space-between}
+.foot p{margin:0;max-width:62ch;font-size:15px}
+.foot .sig{font-family:var(--f-pixel);font-size:9px;color:var(--yellow);line-height:1.8}
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <div class="logo"><span class="logo-mark" aria-hidden="true">汉</span><span class="logo-word">HANYU<b>ARCADE</b></span></div>
+    <span class="bar-note">ГЛЕБ<br>ОКТЯБРЬ 2026</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Система для изучения китайского</h1>
+    <p>После каждого урока она собирает пять материалов. Ниже пример каждого, на знаки и карточки можно нажимать.</p>
+    <ol class="steps">
+      <li class="step"><span class="step-n">1</span><p>Агенту отправляется запись урока из Zoom или фото тетради.</p></li>
+      <li class="step"><span class="step-n">2</span><p>Агент расшифровывает запись прямо на маке и разбирает урок.</p></li>
+      <li class="step"><span class="step-n">3</span><p>На выходе пять материалов к уроку.</p></li>
+    </ol>
+  </section>
+
+  <h2 class="tag">Что на выходе</h2>
+  <div class="levels">
+
+    <article class="level">
+      <div class="info" style="background-color:var(--purple)">
+        <span class="lv">1 / 5</span>
+        <h2>Конспект</h2>
+        <p>Все уроки в одном файле. После урока агент сам дописывает новые слова, грамматику и ошибки с урока.</p>
+        <div class="count"><b>18</b><span>УРОКОВ</span></div>
+      </div>
+      <div class="demo">
+        <p class="cap">Последние уроки · нажми, чтобы открыть</p>
+        <div class="lessons">
+          <details class="lesson" open>
+            <summary><span class="d">Урок 18 · 01.10</span><span class="t"><span>决定</span> и <span>建议</span>, <span>只</span> и <span>了</span>, <span>合适</span> и <span>适合</span></span></summary>
+            <div class="lesson-body">
+              <div class="item"><span class="hz">还没决定</span><span class="py">hái méi juédìng</span><p>«Ещё не решили». 决定 в основном глагол: «решить».</p></div>
+              <div class="item"><span class="hz">我建议你多喝热水</span><span class="py">wǒ jiànyì nǐ duō hē rè shuǐ</span><p>«Советую тебе пить больше горячей воды». После 建议 сразу идёт, кому советуют.</p></div>
+              <div class="item"><span class="hz">我今天只吃了一碗米饭</span><span class="py">wǒ jīntiān zhǐ chīle yì wǎn mǐfàn</span><p>«Сегодня я съел только одну тарелку риса». Когда есть количество, 了 ставится сразу после глагола.</p></div>
+              <div class="item"><span class="hz">合适 · 适合</span><span class="py">héshì · shìhé</span><p>Оба значат «подходить». 合适 прилагательное: 对你很合适. 适合 глагол: 很适合你.</p></div>
+            </div>
+          </details>
+          <details class="lesson">
+            <summary><span class="d">Урок 17 · 28.09</span><span class="t">Погода и прогноз, <span>说好</span>, <span>写完</span>, <span>穿上</span></span></summary>
+            <div class="lesson-body">
+              <div class="item"><span class="hz">说好 · 写完</span><span class="py">shuōhǎo · xiěwán</span><p>«Договорились», «дописал». Вторая часть глагола показывает результат действия.</p></div>
+              <div class="item"><span class="hz">下雪了，请穿上你的外套</span><span class="py">xià xuě le, qǐng chuānshang nǐ de wàitào</span><p>«Идёт снег, надень куртку». В 穿上 часть 上 значит касание: одежда ложится на тело.</p></div>
+              <div class="item"><span class="hz">香港很暖和</span><span class="py">Xiānggǎng hěn nuǎnhuo</span><p>«В Гонконге тепло». 香港 дословно «ароматный порт».</p></div>
+              <div class="item"><span class="hz">一年四季</span><span class="py">yì nián sì jì</span><p>«Круглый год», дословно «год, четыре сезона».</p></div>
+            </div>
+          </details>
+          <details class="lesson">
+            <summary><span class="d">Урок 15 · 09.09</span><span class="t"><span>除了</span>, <span>着</span>, <span>穿</span> и <span>戴</span>, <span>眼镜</span> против <span>眼睛</span></span></summary>
+            <div class="lesson-body">
+              <div class="item"><span class="hz">除了英语以外，我还学汉语</span><span class="py">chúle Yīngyǔ yǐwài, wǒ hái xué Hànyǔ</span><p>«Кроме английского, я ещё учу китайский». С 还 значит «помимо», с 都 значит «все, кроме».</p></div>
+              <div class="item"><span class="hz">墙上挂着一张地图</span><span class="py">qiáng shàng guà zhe yì zhāng dìtú</span><p>«На стене висит карта». Схема: место, глагол с 着, предмет.</p></div>
+              <div class="item"><span class="hz">凉快 · 暖和</span><span class="py">liángkuai · nuǎnhuo</span><p>«Прохладный» и «тёплый».</p></div>
+              <div class="item"><span class="hz">眼镜 · 眼睛</span><span class="py">yǎnjìng · yǎnjing</span><p>«Очки» и «глаза». Звучат почти одинаково: 镜 читается четвёртым тоном, 睛 без тона.</p></div>
+            </div>
+          </details>
+        </div>
+        <a class="btn" href="#notes">Весь конспект и словарь</a>
+      </div>
+    </article>
+
+    <article class="level">
+      <div class="info" style="background-color:var(--red)">
+        <span class="lv">2 / 5</span>
+        <h2>Домашка</h2>
+        <p>Страница к каждому уроку. Над каждым знаком пиньинь, ответы спрятаны, и видно, как писать любой знак.</p>
+        <div class="count"><b>27</b><span>СТРАНИЦ</span></div>
+      </div>
+      <div class="demo">
+        <p class="cap">Нажми на любой знак</p>
+        <div class="hw">
+          <div>
+            <p class="sent" id="sent" data-sent="我对汉语很感兴趣。"></p>
+            <p class="ru">Мне очень интересен китайский.</p>
+          </div>
+          <div>
+            <div class="box">
+              <svg class="grid" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 0V100M0 50H100M0 0L100 100M100 0L0 100" stroke="#E8A49C" stroke-width=".7" stroke-dasharray="2 2" fill="none"/></svg>
+              <div class="w" id="writer" aria-live="polite"></div>
+            </div>
+            <p class="box-cap" id="boxCap">感 · gǎn</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="level">
+      <div class="info" style="background-color:var(--blue)">
+        <span class="lv">3 / 5</span>
+        <h2>Карточки Anki</h2>
+        <p>Из каждого урока собирается колода. Слова с ошибками уходят в отдельную колоду пробелов.</p>
+        <div class="count"><b>1050</b><span>КАРТОЧЕК</span></div>
+      </div>
+      <div class="demo">
+        <div class="acard" id="card" aria-live="polite"></div>
+        <button class="btn" id="cardBtn" type="button">Показать ответ</button>
+      </div>
+    </article>
+
+    <article class="level">
+      <div class="info" style="background-color:var(--green)">
+        <span class="lv">4 / 5</span>
+        <h2>Прописи</h2>
+        <p>Лист на любые знаки, даже на те, которых нет в учебнике. Каждая клетка добавляет одну черту.</p>
+        <div class="count"><b>276</b><span>ЗНАКОВ</span></div>
+      </div>
+      <div class="demo">
+        <p class="cap">我 · wǒ · 7 черт</p>
+        <div class="cb" id="cb"></div>
+      </div>
+    </article>
+
+    <article class="level">
+      <div class="info" style="background-color:var(--pink)">
+        <span class="lv">5 / 5</span>
+        <h2>Разбор знаков</h2>
+        <p>Сложный знак раскладывается на знакомые части. Одна часть подсказывает смысл, другая звук.</p>
+        <div class="count"><b>64</b><span>ЧАСТИ</span></div>
+      </div>
+      <div class="demo">
+        <p class="cap">语 · yǔ · язык</p>
+        <div class="eq">
+          <div class="piece"><span class="k">СМЫСЛ</span><span class="g">讠</span><p>«речь»: стоит в знаках про слова, как 说 и 话</p></div>
+          <span class="op">+</span>
+          <div class="piece"><span class="k">ЗВУК</span><span class="g">吾</span><p>читается wú, звучит похоже на yǔ</p></div>
+          <span class="op">=</span>
+          <div class="piece" style="background:var(--yellow)"><span class="k">ЗНАК</span><span class="g">语</span><p>язык, как в 汉语</p></div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <section class="notes-sec" id="notes" aria-labelledby="notesTitle">
+    <h2 class="tag" id="notesTitle" style="box-shadow:5px 5px 0 var(--purple)">Конспект целиком</h2>
+    <div class="notes-head">
+      <p>Учебная часть конспекта: грамматика и графемы, уроки с 1 по 18 и занятие 8 октября. Личные разборы и домашние задания убраны.</p>
+      <button class="btn" id="pyAll" type="button" aria-pressed="true">Пиньинь: вкл</button>
+    </div>
+    <div class="chapters" id="chapters"></div>
+    <h2 class="tag" style="box-shadow:5px 5px 0 var(--blue)">Словарь</h2>
+    <div class="dict">
+      <label class="cap" for="q">Поиск по знаку, пиньиню, переводу или теме</label>
+      <input class="search" id="q" type="search" placeholder="например: 穿, chuan или одежда" autocomplete="off">
+      <p class="dict-count" id="dcount" aria-live="polite"></p>
+      <div class="words" id="words"></div>
+      <button class="btn" id="more" type="button">Показать ещё</button>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Система работает локально на Mac, внутри Claude Code и Codex, поэтому скачать её целиком нельзя. Готовые колоды Anki, прописи и страницы к урокам можно присылать файлами.</p>
+  </div>
+</footer>
+
+<!--__COURSE__-->
+<!--__HANZI_WRITER__-->
+<script>
+(() => {
+const STROKES = /*__STROKES__*/{};
+const PY = {我:'wǒ',对:'duì',汉:'hàn',语:'yǔ',很:'hěn',感:'gǎn',兴:'xìng',趣:'qù'};
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function staticSvg(ch, n, hi, ghost) {
+  let paths = '';
+  STROKES[ch].strokes.forEach((s, i) => {
+    if (ghost) { paths += '<path d="' + s + '" fill="#CFC9BD"/>'; return; }
+    if (i < n) paths += '<path d="' + s + '" fill="' + (i === hi ? '#EE4A3A' : '#121212') + '"/>';
+  });
+  return '<svg viewBox="0 0 1024 1024" aria-hidden="true">' +
+    '<path d="M512 0V1024M0 512H1024M0 0L1024 1024M1024 0L0 1024" stroke="#E8A49C" stroke-width="5" stroke-dasharray="22 18" fill="none"/>' +
+    '<g transform="translate(0,900) scale(1,-1)">' + paths + '</g></svg>';
+}
+
+/* level 2: sentence + inline stroke box */
+const sent = document.getElementById('sent');
+for (const ch of sent.dataset.sent) {
+  if (!PY[ch]) { const s = document.createElement('span'); s.textContent = ch; sent.append(s); continue; }
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'zi'; b.dataset.zi = ch;
+  b.setAttribute('aria-pressed', 'false');
+  b.setAttribute('aria-label', ch + ', ' + PY[ch] + ', показать как писать');
+  b.innerHTML = '<ruby>' + ch + '<rt>' + PY[ch] + '</rt></ruby>';
+  sent.append(b);
+}
+const host = document.getElementById('writer');
+let writer = null;
+function show(ch, animate) {
+  document.querySelectorAll('.zi').forEach(z => z.setAttribute('aria-pressed', String(z.dataset.zi === ch)));
+  document.getElementById('boxCap').textContent = ch + ' · ' + PY[ch] + ' · черт: ' + STROKES[ch].strokes.length;
+  host.innerHTML = '';
+  if (!window.HanziWriter) { host.innerHTML = staticSvg(ch, STROKES[ch].strokes.length, -1); return; }
+  const size = Math.round(host.getBoundingClientRect().width) || 150;
+  writer = HanziWriter.create(host, ch, {
+    width: size, height: size, padding: Math.round(size * 0.07),
+    showOutline: true, outlineColor: '#E3DED3', strokeColor: '#121212', radicalColor: '#EE4A3A',
+    strokeAnimationSpeed: 1.2, delayBetweenStrokes: 160, showCharacter: !animate || reduceMotion,
+    charDataLoader: (c, done) => done(STROKES[c])
+  });
+  if (animate && !reduceMotion) writer.animateCharacter();
+}
+sent.addEventListener('click', e => { const z = e.target.closest('.zi'); if (z) show(z.dataset.zi, true); });
+show('感', false);
+
+/* level 3: one card at a time */
+const CARDS = [
+  { deck: '汉语::01 课程词汇', f: '感兴趣', py: 'gǎn xìngqù', m: 'интересоваться', ex: '我对汉语很感兴趣。' },
+  { deck: '汉语::04 语法·句型', f: '除了……以外', py: 'chúle……yǐwài', m: 'кроме, помимо', ex: '除了汉语以外，我还学英语。' },
+  { deck: '汉语::02 我的漏洞 · пробелы', f: '眼镜 или 眼睛?', py: 'yǎnjìng · yǎnjing', m: 'очки · глаза', ex: '我戴眼镜。' }
+];
+let ci = 0, open = false;
+const card = document.getElementById('card'), cardBtn = document.getElementById('cardBtn');
+function renderCard() {
+  const c = CARDS[ci];
+  card.innerHTML = '<span class="deck">' + c.deck + '</span><span class="front">' + c.f + '</span>' +
+    (open ? '<span class="py">' + c.py + '</span><span class="mean">' + c.m + '</span><span class="ex">' + c.ex + '</span>' : '');
+  cardBtn.textContent = open ? 'Следующая карточка' : 'Показать ответ';
+}
+cardBtn.addEventListener('click', () => {
+  if (open) { ci = (ci + 1) % CARDS.length; open = false; } else { open = true; }
+  renderCard();
+});
+renderCard();
+
+/* level 4: copybook for 我 */
+const cb = document.getElementById('cb');
+const n = STROKES['我'].strokes.length;
+let cells = '';
+for (let i = 1; i <= n; i++) cells += '<div class="cell">' + staticSvg('我', i, i - 1) + '</div>';
+for (let i = 0; i < 3; i++) cells += '<div class="cell">' + staticSvg('我', 0, -1, true) + '</div>';
+cb.innerHTML = cells;
+
+/* full notes */
+const courseEl = document.getElementById('course-data');
+const COURSE = courseEl ? JSON.parse(courseEl.textContent) : { chapters: [], dictionary: [] };
+const chaptersEl = document.getElementById('chapters');
+function fill(det, ch) {
+  if (det.dataset.filled) return;
+  const body = det.querySelector('.chapter-body');
+  body.innerHTML = ch.html;
+  body.querySelectorAll('table').forEach(tb => { const w = document.createElement('div'); w.className = 'tscroll'; tb.before(w); w.append(tb); });
+  det.dataset.filled = '1';
+}
+COURSE.chapters.forEach(ch => {
+  const det = document.createElement('details');
+  det.className = 'lesson'; det.id = 'ch-' + ch.id;
+  const parts = ch.title.split(' · ');
+  const sum = document.createElement('summary');
+  const d = document.createElement('span'); d.className = 'd'; d.textContent = parts[0];
+  const tt = document.createElement('span'); tt.className = 't'; tt.textContent = parts.slice(1).join(' · ') || ' ';
+  sum.append(d, tt);
+  const body = document.createElement('div'); body.className = 'chapter-body';
+  det.append(sum, body);
+  det.addEventListener('toggle', () => { if (det.open) fill(det, ch); });
+  chaptersEl.append(det);
+});
+function openTarget(id) {
+  let det = document.getElementById('ch-' + id);
+  if (!det) {
+    const ch = COURSE.chapters.find(c => c.html.includes('id="' + id + '"'));
+    if (!ch) return false;
+    det = document.getElementById('ch-' + ch.id);
+  }
+  det.open = true;
+  fill(det, COURSE.chapters.find(c => 'ch-' + c.id === det.id));
+  const el = document.getElementById(id) || det;
+  el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  return true;
+}
+chaptersEl.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (a && openTarget(decodeURIComponent(a.getAttribute('href').slice(1)))) e.preventDefault();
+});
+const pyAll = document.getElementById('pyAll');
+pyAll.addEventListener('click', () => {
+  const on = pyAll.getAttribute('aria-pressed') !== 'true';
+  pyAll.setAttribute('aria-pressed', String(on));
+  pyAll.textContent = on ? 'Пиньинь: вкл' : 'Пиньинь: выкл';
+  chaptersEl.classList.toggle('hide-py', !on);
+});
+
+/* dictionary */
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const q = document.getElementById('q'), wordsEl = document.getElementById('words'), dcount = document.getElementById('dcount'), more = document.getElementById('more');
+const INDEX = COURSE.dictionary.map(w => norm([w.hanzi, w.pinyin, w.pinyin.replace(/\s+/g, ''), w.meaning, w.topic].join(' ')));
+let limit = 48;
+function renderWords() {
+  const needle = norm(q.value.trim());
+  const found = COURSE.dictionary.filter((w, i) => !needle || INDEX[i].includes(needle));
+  wordsEl.replaceChildren(...found.slice(0, limit).map(w => {
+    const el = document.createElement('div'); el.className = 'word';
+    const h = document.createElement('span'); h.className = 'hz'; h.textContent = w.hanzi;
+    const pp = document.createElement('span'); pp.className = 'p'; pp.textContent = w.pinyin;
+    const m = document.createElement('span'); m.className = 'm'; m.textContent = w.meaning;
+    const tp = document.createElement('span'); tp.className = 'tp'; tp.textContent = w.topic;
+    el.append(h, pp, m, tp); return el;
+  }));
+  dcount.textContent = 'Найдено: ' + found.length + ' из ' + COURSE.dictionary.length;
+  more.hidden = found.length <= limit;
+}
+q.addEventListener('input', () => { limit = 48; renderWords(); });
+more.addEventListener('click', () => { limit += 48; renderWords(); });
+renderWords();
+})();
+</script>
